@@ -1,0 +1,104 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 229 79% 96%;
+    --foreground: 201 75% 6%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 201 75% 6%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 201 75% 6%;
+
+    --primary: 202 32% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 205 28% 73%;
+    --secondary-foreground: 201 75% 6%;
+
+    --muted: 205 28% 73%;
+    --muted-foreground: 202 32% 33%;
+
+    --accent: 202 60% 63%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 205 28% 73%;
+    --input: 205 28% 73%;
+    --ring: 202 60% 63%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 201 49% 16%;
+    --sidebar-foreground: 229 79% 96%;
+    --sidebar-primary: 202 60% 63%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 202 32% 33%;
+    --sidebar-accent-foreground: 229 79% 96%;
+    --sidebar-border: 202 32% 33%;
+    --sidebar-ring: 202 60% 63%;
+  }
+
+  .dark {
+    --background: 201 75% 6%;
+    --foreground: 229 79% 96%;
+
+    --card: 201 49% 16%;
+    --card-foreground: 229 79% 96%;
+
+    --popover: 201 49% 16%;
+    --popover-foreground: 229 79% 96%;
+
+    --primary: 202 60% 63%;
+    --primary-foreground: 201 75% 6%;
+
+    --secondary: 202 32% 33%;
+    --secondary-foreground: 229 79% 96%;
+
+    --muted: 202 32% 33%;
+    --muted-foreground: 205 28% 73%;
+
+    --accent: 202 32% 33%;
+    --accent-foreground: 229 79% 96%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 202 32% 33%;
+    --input: 202 32% 33%;
+    --ring: 202 60% 63%;
+
+    --sidebar-background: 201 75% 6%;
+    --sidebar-foreground: 229 79% 96%;
+    --sidebar-primary: 202 60% 63%;
+    --sidebar-primary-foreground: 201 75% 6%;
+    --sidebar-accent: 201 49% 16%;
+    --sidebar-accent-foreground: 229 79% 96%;
+    --sidebar-border: 201 49% 16%;
+    --sidebar-ring: 202 60% 63%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #e5f0f6 0%, #b2ccd7 50%, #94bbc7 100%);
+}
+
+.dark .gradient-bg {
+  background: linear-gradient(135deg, #0b1012 0%, #1c2b34 50%, #3e6573 100%);
+}
