@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { jwtDecode } from 'jwt-decode';
 
+
 type ExpenseType = {
   id: number;
   user_id: number;
@@ -84,7 +85,7 @@ export default function AddExpenses() {
           return;
         }
 
-        const res = await axios.get(`http://localhost:8000/api/expenses/${userId}`, {
+        const res = await axios.get(`${import.meta.env.API_BASE_URL}/api/expenses/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setExpenses(res.data);
@@ -123,7 +124,7 @@ export default function AddExpenses() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/expenses", {
+      const res = await fetch(`${import.meta.env.API_BASE_UR}/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -155,7 +156,7 @@ export default function AddExpenses() {
       // Refresh expenses list
       const token = localStorage.getItem('token');
       if (token) {
-        const updatedRes = await axios.get(`http://localhost:8000/api/expenses/${userId}`, {
+        const updatedRes = await axios.get(`${import.meta.env.API_BASE_URL}/api/expenses/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setExpenses(updatedRes.data);
@@ -217,7 +218,7 @@ export default function AddExpenses() {
       };
 
       await axios.put(
-        `http://localhost:8000/api/expenses/${expenseId}`,
+        `${import.meta.env.API_BASE_URL}/api/expenses/${expenseId}`,
         updateData,
         {
           headers: { Authorization: `Bearer ${token}` }

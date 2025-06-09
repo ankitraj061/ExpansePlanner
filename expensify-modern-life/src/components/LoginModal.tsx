@@ -38,7 +38,7 @@ const [tab, setTab] = useState<'login' | 'signup'>('login');
       const email = loginEmailRef.current?.value || '';
       const password = loginPasswordRef.current?.value || '';
 
-      response = await fetch('http://localhost:8000/api/login', {
+      response = await fetch(`${import.meta.env.API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -48,7 +48,7 @@ const [tab, setTab] = useState<'login' | 'signup'>('login');
       const email = signupEmailRef.current?.value || '';
       const password = signupPasswordRef.current?.value || '';
 
-      response = await fetch('http://localhost:8000/api/signup', {
+      response = await fetch(`${import.meta.env.API_BASE_URL}/api/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
