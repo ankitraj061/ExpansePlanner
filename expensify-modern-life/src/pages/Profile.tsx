@@ -81,10 +81,11 @@ export default function Profile() {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUserInfo(response.data);
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
         toast({
           title: 'Error',
-          description: error.response?.data?.message || 'Failed to load user info'
+          description: axiosError.response?.data?.message || 'Failed to load user info'
         });
       }
     };
@@ -104,10 +105,11 @@ export default function Profile() {
         });
         console.log(res.data);
         setTransactions(res.data);
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
         toast({
           title: 'Error',
-          description: error.response?.data?.message || 'Failed to load transactions'
+          description: axiosError.response?.data?.message || 'Failed to load transactions'
         });
       }
     };
@@ -142,10 +144,11 @@ export default function Profile() {
         description: 'Profile updated successfully'
       });
       setIsEditing(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to update profile'
+        description: axiosError.response?.data?.message || 'Failed to update profile'
       });
     } finally {
       setIsLoading(false);
@@ -195,7 +198,12 @@ export default function Profile() {
       setIsLoading(true);
 
       // Update transaction in backend
-      const updateData: any = {
+      const updateData: {
+        description: string;
+        amount: number;
+        category?: string;
+        income_type?: string;
+      } = {
         description: editedTransactionData.description.trim(),
         amount: amount,
       };
@@ -232,10 +240,11 @@ export default function Profile() {
       setEditingTransaction(null);
       setEditedTransactionData({ description: '', amount: '', category: '', income_type: '' });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to update transaction'
+        description: axiosError.response?.data?.message || 'Failed to update transaction'
       });
     } finally {
       setIsLoading(false);
