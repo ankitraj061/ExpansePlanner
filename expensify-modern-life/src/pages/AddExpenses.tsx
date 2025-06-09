@@ -85,7 +85,7 @@ export default function AddExpenses() {
           return;
         }
 
-        const res = await axios.get(`${import.meta.env.API_BASE_URL}/api/expenses/${userId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setExpenses(res.data);
@@ -124,7 +124,7 @@ export default function AddExpenses() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.API_BASE_UR}/api/expenses`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_UR}/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -156,7 +156,7 @@ export default function AddExpenses() {
       // Refresh expenses list
       const token = localStorage.getItem('token');
       if (token) {
-        const updatedRes = await axios.get(`${import.meta.env.API_BASE_URL}/api/expenses/${userId}`, {
+        const updatedRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setExpenses(updatedRes.data);
@@ -218,7 +218,7 @@ export default function AddExpenses() {
       };
 
       await axios.put(
-        `${import.meta.env.API_BASE_URL}/api/expenses/${expenseId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/expenses/${expenseId}`,
         updateData,
         {
           headers: { Authorization: `Bearer ${token}` }

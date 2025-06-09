@@ -51,12 +51,12 @@ export default function Dashboard() {
         console.log('Fetching dashboard data for user ID:', userId);
         
         const [incomeRes, summaryRes, chartRes, categoriesRes, allExpensesRes, dailyTrendRes] = await Promise.all([
-          fetch(`http://localhost:8000/api/income/total/${userId}`),
-          fetch(`http://localhost:8000/api/expenses/summary/${userId}`),
-          fetch(`http://localhost:8000/api/expenses/monthly/${userId}`),
-          fetch(`http://localhost:8000/api/expenses/categories/${userId}`),
-          fetch(`http://localhost:8000/api/expenses/total/${userId}`),
-          fetch(`http://localhost:8000/api/expenses/daily-trend/${userId}`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/income/total/${userId}`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/summary/${userId}`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/monthly/${userId}`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/categories/${userId}`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/total/${userId}`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/daily-trend/${userId}`),
         ]);
 
         const incomeData = await incomeRes.json();

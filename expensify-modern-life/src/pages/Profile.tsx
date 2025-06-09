@@ -77,7 +77,7 @@ export default function Profile() {
           return;
         }
 
-        const response = await axios.get('http://localhost:8000/api/user/profile', {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUserInfo(response.data);
@@ -99,7 +99,7 @@ export default function Profile() {
           return;
         }
 
-        const res = await axios.get(`http://localhost:8000/api/transactions/${userId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/transactions/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         console.log(res.data);
@@ -134,7 +134,7 @@ export default function Profile() {
       }
       
       setIsLoading(true);
-      await axios.put('http://localhost:8000/api/user/profile', userInfo, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/user/profile`, userInfo, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast({
@@ -208,7 +208,7 @@ export default function Profile() {
 
       const endpoint = transactionType === 'expense' ? 'expenses' : 'income';
       await axios.put(
-        `http://localhost:8000/api/${endpoint}/${transactionId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/${endpoint}/${transactionId}`,
         updateData,
         {
           headers: { Authorization: `Bearer ${token}` }

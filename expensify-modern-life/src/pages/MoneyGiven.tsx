@@ -59,7 +59,7 @@ export default function MoneyGiven() {
   const fetchEntries = async (uid: number) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/money-given`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/money-given`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -99,7 +99,7 @@ export default function MoneyGiven() {
     console.log('Adding entry:', entry);
 
     try {
-      const res = await fetch('http://localhost:8000/api/money-given', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/money-given`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ export default function MoneyGiven() {
     if (!deleteConfirm.entry) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/money-given/${deleteConfirm.entry.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/money-given/${deleteConfirm.entry.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

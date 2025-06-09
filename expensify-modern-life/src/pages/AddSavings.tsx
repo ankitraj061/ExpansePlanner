@@ -70,7 +70,7 @@ export default function AddSavings() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`http://localhost:8000/api/savings/goals/${userId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/savings/goals/${userId}`);
       const result: ApiResponse<SavingsGoal[]> = await response.json();
 
       if (result.success && result.data) {
@@ -128,7 +128,7 @@ export default function AddSavings() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/savings/goals', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/savings/goals`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ export default function AddSavings() {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:8000/api/savings/goals/${selectedGoalId}/add`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/savings/goals/${selectedGoalId}/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -225,7 +225,7 @@ export default function AddSavings() {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:8000/api/savings/goals/${goalToDelete.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/savings/goals/${goalToDelete.id}`, {
         method: 'DELETE',
       });
 

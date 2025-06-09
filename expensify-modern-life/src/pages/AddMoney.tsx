@@ -57,7 +57,7 @@ export default function AddMoney() {
     if (!userId) return;
     const fetchRecent = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/api/income/${userId}/recent`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/income/${userId}/recent`);
         const data = await res.json();
         setRecentIncomes(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -94,7 +94,7 @@ export default function AddMoney() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/income", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/income`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -119,7 +119,7 @@ export default function AddMoney() {
       setType('');
 
       // Refresh recent incomes
-      const updatedRes = await fetch(`http://localhost:8000/api/income/${userId}/recent`);
+      const updatedRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/income/${userId}/recent`);
       const updatedData = await updatedRes.json();
       setRecentIncomes(Array.isArray(updatedData) ? updatedData : []);
     } catch (error) {
