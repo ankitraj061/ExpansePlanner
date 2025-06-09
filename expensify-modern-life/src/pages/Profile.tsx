@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import { jwtDecode } from 'jwt-decode';
-import { ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign } from 'lucide-react';
+import { ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign,IndianRupee } from 'lucide-react';
 
 type DecodedToken = {
   id: number;
@@ -401,7 +401,7 @@ export default function Profile() {
                   <p className="text-2xl font-bold text-red-600">₹{getTotalExpenses().toLocaleString()}</p>
                 </div>
                 <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <DollarSign className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <IndianRupee className="h-8 w-8 text-blue-600 mx-auto mb-2" />
                   <p className="text-sm text-muted-foreground">Net Balance</p>
                   <p className={`text-2xl font-bold ${getTotalBalance() >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                     ₹{getTotalBalance().toLocaleString()}

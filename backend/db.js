@@ -133,28 +133,6 @@ const initDB = async () => {
     `);
     console.log('✅ Savings triggers created');
 
-    // Insert sample savings data (optional - remove if not needed)
-    await pool.query(`
-      INSERT INTO savings_goals (user_id, name, target_amount, current_amount, created_at) 
-      SELECT 1, 'Emergency Fund', 500000.00, 175000.00, '2025-01-01'
-      WHERE NOT EXISTS (SELECT 1 FROM savings_goals WHERE name = 'Emergency Fund' AND user_id = 1);
-    `);
-    
-    await pool.query(`
-      INSERT INTO savings_goals (user_id, name, target_amount, current_amount, created_at) 
-      SELECT 1, 'Europe Trip', 250000.00, 60000.00, '2025-01-15'
-      WHERE NOT EXISTS (SELECT 1 FROM savings_goals WHERE name = 'Europe Trip' AND user_id = 1);
-    `);
-    
-    await pool.query(`
-      INSERT INTO savings_goals (user_id, name, target_amount, current_amount, created_at) 
-      SELECT 1, 'New Laptop', 80000.00, 25000.00, '2025-02-01'
-      WHERE NOT EXISTS (SELECT 1 FROM savings_goals WHERE name = 'New Laptop' AND user_id = 1);
-    `);
-    console.log('✅ Sample savings data inserted');
-
-    
-    
   } catch (err) {
     console.error('❌ Error initializing DB:', err);
   }
