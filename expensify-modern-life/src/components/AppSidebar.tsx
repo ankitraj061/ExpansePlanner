@@ -20,8 +20,8 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Profile", url: "/profile", icon: User },
   { title: "Add Money", url: "/add-money", icon: Plus },
-  { title: "Add Savings", url: "/add-savings", icon: Settings },
   { title: "Add Expenses", url: "/add-expenses", icon: Plus },
+  { title: "Add Savings", url: "/add-savings", icon: Settings },
   { title: "Money Received", url: "/money-received", icon: TrendingUp },
   { title: "Money Given", url: "/money-given", icon: TrendingDown },
 ];

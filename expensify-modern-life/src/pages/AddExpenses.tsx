@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -52,6 +52,7 @@ export default function AddExpenses() {
   // Expense history state
   const [expenses, setExpenses] = useState<ExpenseType[]>([]);
   const [editingExpense, setEditingExpense] = useState<number | null>(null);
+  const [deletingExpense, setDeletingExpense] = useState<number | null>(null);
   const [editedExpenseData, setEditedExpenseData] = useState<{
     description: string;
     amount: string;
@@ -124,7 +125,7 @@ export default function AddExpenses() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_UR}/api/expenses`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -249,6 +250,45 @@ export default function AddExpenses() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteExpense = async (expenseId: number) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast({ title: 'Error', description: 'No auth token found' });
+        return;
+      }
+
+      setDeletingExpense(expenseId);
+
+      // Delete expense from backend
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/api/expenses/${expenseId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      // Remove expense from local state
+      setExpenses(prevExpenses =>
+        prevExpenses.filter(expense => expense.id !== expenseId)
+      );
+
+      toast({
+        title: 'Success!',
+        description: 'Expense deleted successfully'
+      });
+
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to delete expense',
+        variant: 'destructive'
+      });
+    } finally {
+      setDeletingExpense(null);
     }
   };
 
@@ -480,14 +520,32 @@ export default function AddExpenses() {
                             </Button>
                           </>
                         ) : (
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            onClick={() => handleEditExpense(expense)}
-                            disabled={editingExpense !== null}
-                          >
-                            Edit
-                          </Button>
+                          <>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => handleEditExpense(expense)}
+                              disabled={editingExpense !== null || deletingExpense !== null}
+                            >
+                              Edit
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="destructive" 
+                              onClick={() => handleDeleteExpense(expense.id)}
+                              disabled={editingExpense !== null || deletingExpense === expense.id}
+                              className="flex items-center gap-1"
+                            >
+                              {deletingExpense === expense.id ? (
+                                'Deleting...'
+                              ) : (
+                                <>
+                                  <Trash2 className="w-3 h-3" />
+                                  Delete
+                                </>
+                              )}
+                            </Button>
+                          </>
                         )}
                       </div>
                     </div>

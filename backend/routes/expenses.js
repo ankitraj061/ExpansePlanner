@@ -182,7 +182,7 @@ router.get('/daily-trend/:userId', async (req, res) => {
       expenses: parseFloat(row.expenses) || 0
     }));
 
-    console.log(`Daily trend for user ${userId}:`, dailyData);
+   
     res.json(dailyData);
   } catch (error) {
     console.error('Error fetching daily trend:', error);
@@ -215,6 +215,31 @@ router.put('/:expenseId', async (req, res) => {
   } catch (error) {
     console.error('Error updating expense:', error);
     res.status(500).json({ error: 'Failed to update expense' });
+  }
+});
+
+
+// Delete expense
+router.delete('/:expenseId', async (req, res) => {
+  const { expenseId } = req.params;
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM expenses WHERE id = $1 RETURNING *',
+      [expenseId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Expense not found' });
+    }
+
+    res.json({ 
+      message: 'Expense deleted successfully', 
+      deletedExpense: result.rows[0] 
+    });
+  } catch (error) {
+    console.error('Error deleting expense:', error);
+    res.status(500).json({ error: 'Failed to delete expense' });
   }
 });
 

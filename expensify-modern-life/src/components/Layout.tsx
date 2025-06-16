@@ -48,9 +48,8 @@ export function Layout({ children, showAuthButton = false }: LayoutProps) {
             )}
           </header>
 
-          <main className="flex-1 p-4 md:p-6">
+          
             {children}
-          </main>
 
           <footer className="bg-card border-t py-4 text-center text-sm text-muted-foreground">
             © 2025 Expense Planner

@@ -44,7 +44,7 @@ router.get('/', authenticate, async (req, res) => {
        ORDER BY date DESC, created_at DESC`,
       [userId]
     );
-    console.log('Fetched money given entries:', result.rows);
+    
 
     // Ensure we always return an array
     res.json(result.rows || []);
