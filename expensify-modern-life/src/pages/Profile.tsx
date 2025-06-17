@@ -325,9 +325,9 @@ export default function Profile() {
 
   return (
     <Layout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 mb-6 mx-6 animate-fade-in">
         <div>
-          <h1 className="text-3xl font-bold text-expense-navy dark:text-expense-light">
+          <h1 className="text-3xl font-bold text-primary">
             Profile
           </h1>
           <p className="text-expense-blue-dark dark:text-expense-gray">

@@ -136,10 +136,10 @@ export default function AddMoney() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
+      <div className=" mx-6 mb-6 space-y-6 animate-fade-in">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-expense-navy dark:text-expense-light">
+        <div className="">
+          <h1 className="text-3xl font-bold text-primary">
             Add Money
           </h1>
           <p className="text-expense-blue-dark dark:text-expense-gray mt-2">

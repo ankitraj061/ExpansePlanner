@@ -5,6 +5,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import Insights from '@/components/Insights';
 
 type DecodedToken = {
   id: number;
@@ -112,7 +113,8 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="space-y-6 animate-fade-in">
+      <Insights  forceShow={true}/>
+      <div className="mx-6 mb-6 space-y-6 animate-fade-in">
         <div>
           <h1 className="text-3xl font-bold text-primary">Dashboard</h1>
           <p className="text-muted-foreground">Overview of your financial status</p>

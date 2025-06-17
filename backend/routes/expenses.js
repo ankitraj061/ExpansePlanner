@@ -35,7 +35,7 @@ router.get('/summary/:userId', async (req, res) => {
       `SELECT COALESCE(SUM(amount), 0) AS total FROM expenses WHERE user_id = $1 AND date = CURRENT_DATE`,
       [userId]
     );
-    console.log(todayResult.rows[0].total);
+    
 
     const weekResult = await pool.query(
       `SELECT COALESCE(SUM(amount), 0) AS total FROM expenses WHERE user_id = $1 AND date >= CURRENT_DATE - INTERVAL '7 days'`,

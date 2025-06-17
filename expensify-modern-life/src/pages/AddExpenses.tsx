@@ -312,9 +312,9 @@ export default function AddExpenses() {
 
   return (
     <Layout>
-      <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
+      <div className="mb-6 mx-6 space-y-6 animate-fade-in">
         <div>
-          <h1 className="text-3xl font-bold text-expense-navy dark:text-expense-light">
+          <h1 className="text-3xl font-bold text-primary">
             Add Expense
           </h1>
           <p className="text-expense-blue-dark dark:text-expense-gray">

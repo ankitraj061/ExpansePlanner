@@ -6,7 +6,7 @@ const authenticate = require('../middleware/authenticate');
 
 // GET profile
 router.get('/profile', authenticate, async (req, res) => {
-  console.log('Fetching user profile...'); // Debugging line
+  
   try {
     const userId = req.user.id;
     const result = await pool.query('SELECT name, email FROM users WHERE id = $1', [userId]);
@@ -19,7 +19,7 @@ router.get('/profile', authenticate, async (req, res) => {
 
 // PUT profile
 router.put('/profile', authenticate, async (req, res) => {
-  console.log('Updating user profile...'); // Debugging line
+  
   try {
     const userId = req.user.id;
     const { name, email } = req.body;

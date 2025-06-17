@@ -161,7 +161,7 @@ export default function MoneyGiven() {
 
   return (
     <Layout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 mx-6 mb-6 animate-fade-in">
         <div>
           <h1 className="text-3xl font-bold text-primary">Money Given</h1>
           <p className="text-muted-foreground">Track money you've given to others</p>

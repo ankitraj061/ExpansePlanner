@@ -46,7 +46,7 @@ router.get('/:userId/recent', async (req, res) => {
 // Get total income for a user
 router.get('/total/:userId', async (req, res) => {
   const { userId } = req.params;
-  console.log(`Fetching total income for user ID: ${userId}`);
+  
 
   try {
     const result = await pool.query(

@@ -11,6 +11,9 @@ const moneyReceivedRoutes = require('./routes/moneyReceived');
 const moneyGivenRoutes = require('./routes/moneyGiven');
 const savingsRoutes = require('./routes/savings');
 const transactionsRoutes = require('./routes/transactions');
+const insightsRoute = require('./routes/insights');
+
+
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -24,6 +27,7 @@ app.use('/api/money-received', moneyReceivedRoutes);
 app.use('/api/money-given', moneyGivenRoutes);
 app.use('/api/savings', savingsRoutes);
 app.use('/api/transactions', transactionsRoutes);
+app.use('/api/insights', insightsRoute);
 
 
 // Init DB table
