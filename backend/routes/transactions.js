@@ -1,11 +1,9 @@
-// Add this to your existing routes or create a new transactions.js file
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../db'); // Adjust path as needed
-const auth = require('../middleware/authenticate'); // Adjust path as needed
+const { pool } = require('../db');
 
 // GET /api/transactions/:userId - Get combined transaction history
-router.get('/:userId', auth, async (req, res) => {
+router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     
@@ -68,7 +66,7 @@ router.get('/:userId', auth, async (req, res) => {
 });
 
 // GET /api/transactions/:userId/summary - Get financial summary
-router.get('/:userId/summary', auth, async (req, res) => {
+router.get('/:userId/summary', async (req, res) => {
   try {
     const { userId } = req.params;
     
@@ -104,7 +102,7 @@ router.get('/:userId/summary', auth, async (req, res) => {
 });
 
 // GET /api/transactions/:userId/recent - Get recent transactions (last 10)
-router.get('/:userId/recent', auth, async (req, res) => {
+router.get('/:userId/recent', async (req, res) => {
   try {
     const { userId } = req.params;
     
@@ -164,7 +162,7 @@ router.get('/:userId/recent', auth, async (req, res) => {
 });
 
 // GET /api/transactions/:userId/monthly - Get monthly breakdown
-router.get('/:userId/monthly', auth, async (req, res) => {
+router.get('/:userId/monthly', async (req, res) => {
   try {
     const { userId } = req.params;
     const { year = new Date().getFullYear() } = req.query;
@@ -222,4 +220,5 @@ router.get('/:userId/monthly', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error while fetching monthly data' });
   }
 });
+
 module.exports = router;

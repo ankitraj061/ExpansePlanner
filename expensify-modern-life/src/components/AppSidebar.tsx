@@ -1,4 +1,3 @@
-
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -14,7 +13,7 @@ import {
 import { Home, User, Plus, Settings, TrendingDown, TrendingUp, LogOut, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext"; // Adjust path as needed
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
@@ -30,16 +29,12 @@ export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
   const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const isActive = (path: string) => currentPath === path;
 
-  const handleLogout = () => {
-    // Add logout logic here
-    localStorage.removeItem("token");
-    navigate("/"); // Redirect to home or login page after logout
-
-
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (

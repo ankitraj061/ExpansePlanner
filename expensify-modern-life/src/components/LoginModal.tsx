@@ -28,12 +28,13 @@ const [isLoading, setIsLoading] = useState(false);
 const [tab, setTab] = useState<'login' | 'signup'>('login');
 
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsLoading(true);
 
   try {
     let response;
+
     if (tab === 'login') {
       const email = loginEmailRef.current?.value || '';
       const password = loginPasswordRef.current?.value || '';
@@ -41,6 +42,7 @@ const [tab, setTab] = useState<'login' | 'signup'>('login');
       response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // ✅ this sends the cookie
         body: JSON.stringify({ email, password }),
       });
     } else {
@@ -56,10 +58,9 @@ const [tab, setTab] = useState<'login' | 'signup'>('login');
     }
 
     const data = await response.json();
-
     if (!response.ok) throw new Error(data.message || 'Something went wrong');
-    localStorage.setItem('token', data.token);
 
+    // ✅ No need to store token manually
     toast({
       title: 'Success!',
       description: tab === 'login' ? 'Logged in successfully!' : 'Account created!',
@@ -67,16 +68,17 @@ const [tab, setTab] = useState<'login' | 'signup'>('login');
 
     if (tab === 'login') navigate('/dashboard');
     onOpenChange(false);
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast({
       title: 'Error',
-      description: "Error logging in or signing up. Please try again.",
+      description: error.message || 'Error logging in or signing up. Please try again.',
       variant: 'destructive',
     });
   } finally {
     setIsLoading(false);
   }
 };
+
 
 
   return (

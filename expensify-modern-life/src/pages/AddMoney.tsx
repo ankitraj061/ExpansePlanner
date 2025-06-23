@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '@/context/AuthContext'; // Adjust path as needed
 
 type IncomeType = {
   id: number;
@@ -41,17 +41,15 @@ export default function AddMoney() {
   const [recentIncomes, setRecentIncomes] = useState<IncomeType[]>([]);
   const [loadingIncomes, setLoadingIncomes] = useState(true);
 
+  const { user } = useAuth();
+  
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = jwtDecode<DecodedToken>(token);
-        setUserId(decoded.id);
-      } catch (err) {
-        console.error("Invalid token:", err);
-      }
+    if (user) {
+      setUserId(user.id);
     }
-  }, []);
+  }, [user]);
+
+  
 
   useEffect(() => {
     if (!userId) return;

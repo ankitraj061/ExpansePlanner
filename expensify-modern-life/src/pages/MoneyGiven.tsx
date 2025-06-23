@@ -4,13 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/components/ui/use-toast';
 import { Trash2, Plus, AlertTriangle, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-
-type DecodedToken = {
-  id: number;
-};
+import { useAuth } from '@/context/AuthContext'; // Adjust path as needed
 
 type Entry = {
   id: number;
@@ -41,28 +38,20 @@ export default function MoneyGiven() {
     entry: null,
   });
 
-  const [userId, setUserId] = useState<number | null>(null);
-  const token = localStorage.getItem('token');
+  const { user } = useAuth();
 
+  // Fetch entries when user is available
   useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode<DecodedToken>(token);
-        setUserId(decoded.id);
-        fetchEntries(decoded.id);
-      } catch (err) {
-        console.error('Invalid token:', err);
-      }
+    if (user?.id) {
+      fetchEntries(user.id);
     }
-  }, [token]);
+  }, [user]);
 
   const fetchEntries = async (uid: number) => {
     setIsLoading(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/money-given`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
       
       if (!res.ok) {
@@ -88,7 +77,7 @@ export default function MoneyGiven() {
   };
 
   const handleAdd = async () => {
-    if (!newEntry.person || !newEntry.amount || !userId) return;
+    if (!newEntry.person || !newEntry.amount || !user?.id) return;
 
     const entry = {
       person: newEntry.person,
@@ -103,8 +92,8 @@ export default function MoneyGiven() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(entry),
       });
 
@@ -116,7 +105,7 @@ export default function MoneyGiven() {
       console.log('Added entry:', data);
       
       // Refresh the entire list to ensure consistency
-      fetchEntries(userId);
+      fetchEntries(user.id);
       setNewEntry({ person: '', amount: '', description: '', date: '' });
     } catch (err) {
       console.error('Error adding entry:', err);
@@ -137,9 +126,7 @@ export default function MoneyGiven() {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/money-given/${deleteConfirm.entry.id}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
 
       if (!res.ok) {

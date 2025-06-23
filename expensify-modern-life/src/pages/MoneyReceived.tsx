@@ -6,11 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Trash2, Plus, AlertTriangle, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-
-type DecodedToken = {
-  id: number;
-};
+import { toast } from '@/components/ui/use-toast';
+import { useAuth } from '@/context/AuthContext'; // Adjust path as needed
 
 type Entry = {
   id: number;
@@ -42,27 +39,27 @@ export default function MoneyReceived() {
   });
 
   const [userId, setUserId] = useState<number | null>(null);
-  const token = localStorage.getItem('token');
+  const { user } = useAuth(); 
 
   useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode<DecodedToken>(token);
-        setUserId(decoded.id);
-        fetchEntries(decoded.id);
-      } catch (err) {
-        console.error('Invalid token:', err);
-      }
+    if (user) {
+      setUserId(user.id);
     }
-  }, [token]); // Added token dependency
+  }, [user]);
+
+
+  // Fetch entries when userId is available
+  useEffect(() => {
+    if (userId) {
+      fetchEntries(userId);
+    }
+  }, [userId]);
 
   const fetchEntries = async (uid: number) => {
     setIsLoading(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/money-received`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
       
       if (!res.ok) {
@@ -103,8 +100,8 @@ export default function MoneyReceived() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(entry),
       });
 
@@ -137,9 +134,7 @@ export default function MoneyReceived() {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/money-received/${deleteConfirm.entry.id}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
 
       if (!res.ok) {

@@ -8,13 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { jwtDecode } from 'jwt-decode';
-import { ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign,IndianRupee } from 'lucide-react';
-
-type DecodedToken = {
-  id: number;
-  // Add any other properties if needed
-};
+import { ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign, IndianRupee } from 'lucide-react';
 
 type Transaction = {
   id: number;
@@ -27,6 +21,9 @@ type Transaction = {
   created_at: string;
 };
 
+// Configure axios to send cookies with requests
+axios.defaults.withCredentials = true;
+
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<number | null>(null);
@@ -36,6 +33,7 @@ export default function Profile() {
   });
   const [userId, setUserId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Store edited transaction data temporarily
   const [editedTransactionData, setEditedTransactionData] = useState<{
@@ -50,16 +48,28 @@ export default function Profile() {
     income_type: ''
   });
 
+  // Check authentication status
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    const checkAuth = async () => {
       try {
-        const decoded = jwtDecode<DecodedToken>(token);
-        setUserId(decoded.id);
-      } catch (err) {
-        console.error("Invalid token:", err);
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/middleware/authenticate`);
+        if (response.data.authenticated) {
+          setIsAuthenticated(true);
+          setUserId(response.data.user.id);
+          setUserInfo({
+            name: response.data.user.name,
+            email: response.data.user.email
+          });
+        } else {
+          toast({ title: 'Error', description: 'Please log in to access this page' });
+        }
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+        toast({ title: 'Error', description: 'Authentication failed. Please log in again.' });
       }
-    }
+    };
+
+    checkAuth();
   }, []);
 
   // State to store transactions fetched from backend
@@ -68,41 +78,12 @@ export default function Profile() {
   const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
 
   useEffect(() => {
-    // Fetch user info and transactions when component mounts
-    const fetchUserInfo = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          toast({ title: 'Error', description: 'No auth token found' });
-          return;
-        }
-
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/profile`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setUserInfo(response.data);
-      } catch (error: unknown) {
-        const axiosError = error as { response?: { data?: { message?: string } } };
-        toast({
-          title: 'Error',
-          description: axiosError.response?.data?.message || 'Failed to load user info'
-        });
-      }
-    };
-
-    // Fetch combined transactions from backend
+    // Fetch transactions when component mounts and user is authenticated
     const fetchTransactions = async () => {
-      if (!userId) return;
+      if (!userId || !isAuthenticated) return;
+      
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          toast({ title: 'Error', description: 'No auth token found' });
-          return;
-        }
-
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/transactions/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/transactions/${userId}`);
         console.log(res.data);
         setTransactions(res.data);
       } catch (error: unknown) {
@@ -114,9 +95,8 @@ export default function Profile() {
       }
     };
 
-    fetchUserInfo();
     fetchTransactions();
-  }, [userId]);
+  }, [userId, isAuthenticated]);
 
   // Filter transactions based on selected filter
   useEffect(() => {
@@ -128,17 +108,14 @@ export default function Profile() {
   }, [transactions, filter]);
 
   const handleSaveProfile = async () => {
+    if (!isAuthenticated) {
+      toast({ title: 'Error', description: 'Please log in to update profile' });
+      return;
+    }
+    
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast({ title: 'Error', description: 'No auth token found' });
-        return;
-      }
-      
       setIsLoading(true);
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/user/profile`, userInfo, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/user/profile`, userInfo);
       toast({
         title: 'Success!',
         description: 'Profile updated successfully'
@@ -166,13 +143,12 @@ export default function Profile() {
   };
 
   const handleSaveTransaction = async (transactionId: number, transactionType: 'income' | 'expense') => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast({ title: 'Error', description: 'No auth token found' });
-        return;
-      }
+    if (!isAuthenticated) {
+      toast({ title: 'Error', description: 'Please log in to update transactions' });
+      return;
+    }
 
+    try {
       // Validate input data
       if (!editedTransactionData.description.trim()) {
         toast({ title: 'Error', description: 'Description cannot be empty' });
@@ -217,10 +193,7 @@ export default function Profile() {
       const endpoint = transactionType === 'expense' ? 'expenses' : 'income';
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/${endpoint}/${transactionId}`,
-        updateData,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
+        updateData
       );
 
       // Update local state with the updated transaction

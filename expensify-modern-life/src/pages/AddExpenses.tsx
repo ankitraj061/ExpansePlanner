@@ -13,8 +13,7 @@ import { CalendarIcon, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
-import { jwtDecode } from 'jwt-decode';
-
+import { useAuth } from '@/context/AuthContext'; // Adjust path as needed
 
 type ExpenseType = {
   id: number;
@@ -23,11 +22,6 @@ type ExpenseType = {
   category: string;
   description: string;
   date: string;
-};
-
-type DecodedToken = {
-  id: number;
-  // Add any other properties if needed
 };
 
 const categories = [
@@ -63,31 +57,24 @@ export default function AddExpenses() {
     category: ''
   });
 
+  const { user } = useAuth();
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = jwtDecode<DecodedToken>(token);
-        setUserId(decoded.id);
-      } catch (err) {
-        console.error("Invalid token:", err);
-      }
+    if (user) {
+      setUserId(user.id);
     }
-  }, []);
+  }, [user]);
+
+ 
+
+  
 
   // Fetch expenses when userId is available
   useEffect(() => {
     const fetchExpenses = async () => {
       if (!userId) return;
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          toast({ title: 'Error', description: 'No auth token found' });
-          return;
-        }
-
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          withCredentials: true
         });
         setExpenses(res.data);
       } catch (error: any) {
@@ -130,6 +117,7 @@ export default function AddExpenses() {
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: 'include',
         body: JSON.stringify({
           user_id: userId,
           amount: parseFloat(amount),
@@ -155,13 +143,10 @@ export default function AddExpenses() {
       setCategory('');
 
       // Refresh expenses list
-      const token = localStorage.getItem('token');
-      if (token) {
-        const updatedRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setExpenses(updatedRes.data);
-      }
+      const updatedRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/expenses/${userId}`, {
+        withCredentials: true
+      });
+      setExpenses(updatedRes.data);
 
     } catch (error) {
       console.error(error);
@@ -186,12 +171,6 @@ export default function AddExpenses() {
 
   const handleSaveExpense = async (expenseId: number) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast({ title: 'Error', description: 'No auth token found' });
-        return;
-      }
-
       // Validate input data
       if (!editedExpenseData.description.trim()) {
         toast({ title: 'Error', description: 'Description cannot be empty' });
@@ -222,7 +201,7 @@ export default function AddExpenses() {
         `${import.meta.env.VITE_API_BASE_URL}/api/expenses/${expenseId}`,
         updateData,
         {
-          headers: { Authorization: `Bearer ${token}` }
+          withCredentials: true
         }
       );
 
@@ -255,19 +234,13 @@ export default function AddExpenses() {
 
   const handleDeleteExpense = async (expenseId: number) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast({ title: 'Error', description: 'No auth token found' });
-        return;
-      }
-
       setDeletingExpense(expenseId);
 
       // Delete expense from backend
       await axios.delete(
         `${import.meta.env.VITE_API_BASE_URL}/api/expenses/${expenseId}`,
         {
-          headers: { Authorization: `Bearer ${token}` }
+          withCredentials: true
         }
       );
 

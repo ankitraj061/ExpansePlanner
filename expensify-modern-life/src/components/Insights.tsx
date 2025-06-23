@@ -90,13 +90,12 @@ const InsightsModal = ({ forceShow = false }: { forceShow?: boolean }) => {
           setError(null);
           
           const res = await axios.get<InsightsResponse>(
-            `${import.meta.env.VITE_API_BASE_URL}/api/insights`, 
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+  `${import.meta.env.VITE_API_BASE_URL}/api/insights`,
+  {
+    withCredentials: true // ✅ tells browser to send cookies
+  }
+);
+
           
           // Handle both old format (string array) and new format (object array)
           if (Array.isArray(res.data.insights)) {

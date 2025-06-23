@@ -9,12 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Target, Trash2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { jwtDecode } from 'jwt-decode';
-
-type DecodedToken = {
-  id: number;
-  // Add any other properties if needed
-};
+import { toast } from '@/components/ui/use-toast';
+import { useAuth } from '@/context/AuthContext'; // Adjust path as needed
 
 type SavingsGoal = {
   id: number;
@@ -40,18 +36,17 @@ export default function AddSavings() {
   // Delete confirmation modal states
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [goalToDelete, setGoalToDelete] = useState<SavingsGoal | null>(null);
+  const {user} = useAuth();
 
+
+  // Set userId from context if available
   useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-          try {
-            const decoded = jwtDecode<DecodedToken>(token);
-    setUserId(decoded.id);
-          } catch (err) {
-            console.error("Invalid token:", err);
-          }
-        }
-      }, []);
+    if (user) {
+      setUserId(user.id);
+    }
+  }, [user]);
+  
+  
 
   const [newGoal, setNewGoal] = useState({
     name: '',
@@ -70,7 +65,9 @@ export default function AddSavings() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/savings/goals/${userId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/savings/goals/${userId}`, {
+        credentials: 'include',
+      });
       const result: ApiResponse<SavingsGoal[]> = await response.json();
 
       if (result.success && result.data) {
@@ -133,6 +130,7 @@ export default function AddSavings() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           userId,
           name: newGoal.name,
@@ -177,6 +175,7 @@ export default function AddSavings() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           amount: amount,
           description: `Added ₹${amount} to savings`
@@ -227,6 +226,7 @@ export default function AddSavings() {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/savings/goals/${goalToDelete.id}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
 
       const result: ApiResponse<any> = await response.json();
@@ -270,7 +270,7 @@ export default function AddSavings() {
 
   return (
     <Layout>
-      <div className=" mx-6 mb-6 mx-auto space-y-6 animate-fade-in">
+      <div className="space-y-6 mx-6 mb-6 animate-fade-in">
       <div>
         <h1 className="text-3xl font-bold text-primary">
           Savings Management
